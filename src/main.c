@@ -10,10 +10,7 @@
 #define FULL_WIDTH 1920
 #define FULL_HEIGHT 1080
 
-#define START_X 0
-#define START_Y 505
-
-#define WINDOW_FACTOR 28
+#define WINDOW_FACTOR 25
 #define WINDOW_WIDTH 16 * WINDOW_FACTOR
 #define WINDOW_HEIGHT 9 * WINDOW_FACTOR
 
@@ -21,15 +18,28 @@
 #define ZOOM_WIDTH 16 * ZOOM_FACTOR
 #define ZOOM_HEIGHT 9 * ZOOM_FACTOR
 
-#define STEP 5
+#define STEP_FINE 5
+#define STEP 15
+
 #define INTERVAL 150
+
+/*#define START_X 0*/
+/*#define START_Y 505*/
+/*#define START_GRAVITY GDK_GRAVITY_NORTH_WEST*/
+
+#define START_X FULL_WIDTH
+#define START_Y 625
+#define START_GRAVITY GDK_GRAVITY_SOUTH_EAST
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static GdkPixbuf *SCREENSHOT = NULL;
 
-static gint srcX = FULL_WIDTH - ZOOM_WIDTH - 160;
-static gint srcY = 250;
+/*static gint srcX = FULL_WIDTH - ZOOM_WIDTH - 160;*/
+/*static gint srcY = 250;*/
+
+static gint srcX = FULL_WIDTH - ZOOM_WIDTH - 530;
+static gint srcY = 220;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -76,33 +86,50 @@ static gboolean cbKeyPressed(GtkWidget *widget, GdkEventKey *event,
 
   if (key == gdk_keyval_from_name("Up")) {
     srcY -= STEP;
-    if (srcY < 0) {
-      srcY = 0;
-    }
   }
 
   if (key == gdk_keyval_from_name("Down")) {
     srcY += STEP;
-
-    if (srcY > (FULL_HEIGHT - ZOOM_HEIGHT)) {
-      srcY = FULL_HEIGHT - ZOOM_HEIGHT;
-    }
   }
 
   if (key == gdk_keyval_from_name("Left")) {
     srcX -= STEP;
-
-    if (srcX < 0) {
-      srcX = 0;
-    }
   }
 
   if (key == gdk_keyval_from_name("Right")) {
     srcX += STEP;
+  }
 
-    if (srcX > (FULL_WIDTH - ZOOM_WIDTH)) {
-      srcX = FULL_WIDTH - ZOOM_WIDTH;
-    }
+  if (key == gdk_keyval_from_name("w")) {
+    srcY -= STEP_FINE;
+  }
+
+  if (key == gdk_keyval_from_name("s")) {
+    srcY += STEP_FINE;
+  }
+
+  if (key == gdk_keyval_from_name("a")) {
+    srcX -= STEP_FINE;
+  }
+
+  if (key == gdk_keyval_from_name("d")) {
+    srcX += STEP_FINE;
+  }
+
+  if (srcY < 0) {
+    srcY = 0;
+  }
+
+  if (srcY > (FULL_HEIGHT - ZOOM_HEIGHT)) {
+    srcY = FULL_HEIGHT - ZOOM_HEIGHT;
+  }
+
+  if (srcX < 0) {
+    srcX = 0;
+  }
+
+  if (srcX > (FULL_WIDTH - ZOOM_WIDTH)) {
+    srcX = FULL_WIDTH - ZOOM_WIDTH;
   }
 
   return TRUE;
@@ -139,7 +166,7 @@ static void activate() {
   gtk_window_set_title(GTK_WINDOW(mainWindow), "Screen Magnifier");
   gtk_window_set_resizable(GTK_WINDOW(mainWindow), FALSE);
 
-  gtk_window_set_gravity(GTK_WINDOW(mainWindow), GDK_GRAVITY_NORTH_WEST);
+  gtk_window_set_gravity(GTK_WINDOW(mainWindow), START_GRAVITY);
   gtk_window_move(GTK_WINDOW(mainWindow), START_X, START_Y);
   gtk_window_set_keep_above(GTK_WINDOW(mainWindow), TRUE);
 
