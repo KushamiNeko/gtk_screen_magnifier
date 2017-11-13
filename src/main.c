@@ -9,14 +9,10 @@
 #define WINDOW_WIDTH 16 * WINDOW_FACTOR
 #define WINDOW_HEIGHT 9 * WINDOW_FACTOR
 
-#define ZOOM_FACTOR 13
-#define ZOOM_WIDTH 16 * ZOOM_FACTOR
-#define ZOOM_HEIGHT 9 * ZOOM_FACTOR
-
 #define STEP_FINE 5
 #define STEP 15
 
-#define INTERVAL 150
+#define INTERVAL 100
 
 /*#define START_X 0*/
 /*#define START_Y 505*/
@@ -27,21 +23,29 @@
 #define START_Y FULL_HEIGHT
 #define START_GRAVITY GDK_GRAVITY_SOUTH_EAST
 
-/*#define srcX = FULL_WIDTH - ZOOM_WIDTH - 160;*/
-/*#define srcY = 250;*/
-
-/*#define srcX = FULL_WIDTH - ZOOM_WIDTH - 530;*/
-/*#define srcY = 220;*/
-
-#define SRC_X FULL_WIDTH - ZOOM_WIDTH
-#define SRC_Y 0
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static GdkPixbuf *SCREENSHOT = NULL;
 
-static gint srcX = SRC_X;
-static gint srcY = SRC_Y;
+static gboolean FINE_STEP = FALSE;
+
+static gint ZOOM_FACTOR;
+static gint ZOOM_WIDTH;
+static gint ZOOM_HEIGHT;
+
+static gint SRCX;
+static gint SRCY;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static void init() {
+  ZOOM_FACTOR = 12;
+  ZOOM_WIDTH = 16 * ZOOM_FACTOR;
+  ZOOM_HEIGHT = 9 * ZOOM_FACTOR;
+
+  SRCX = FULL_WIDTH - ZOOM_WIDTH;
+  SRCY = 0;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -69,7 +73,7 @@ static void screenshotTake() {
 static GdkPixbuf *screenshotZoom() {
 
   GdkPixbuf *screenshotSub =
-      gdk_pixbuf_new_subpixbuf(SCREENSHOT, srcX, srcY, ZOOM_WIDTH, ZOOM_HEIGHT);
+      gdk_pixbuf_new_subpixbuf(SCREENSHOT, SRCX, SRCY, ZOOM_WIDTH, ZOOM_HEIGHT);
 
   GdkPixbuf *screenshot = gdk_pixbuf_scale_simple(
       screenshotSub, WINDOW_WIDTH, WINDOW_HEIGHT, GDK_INTERP_BILINEAR);
@@ -86,52 +90,68 @@ static gboolean cbKeyPressed(GtkWidget *widget, GdkEventKey *event,
 
   guint key = event->keyval;
 
-  if (key == gdk_keyval_from_name("Up")) {
-    srcY -= STEP;
-  }
-
-  if (key == gdk_keyval_from_name("Down")) {
-    srcY += STEP;
-  }
-
-  if (key == gdk_keyval_from_name("Left")) {
-    srcX -= STEP;
-  }
-
-  if (key == gdk_keyval_from_name("Right")) {
-    srcX += STEP;
-  }
-
   if (key == gdk_keyval_from_name("w")) {
-    srcY -= STEP_FINE;
+    if (FINE_STEP) {
+      SRCY -= STEP_FINE;
+    } else {
+      SRCY -= STEP;
+    }
   }
 
   if (key == gdk_keyval_from_name("s")) {
-    srcY += STEP_FINE;
+    if (FINE_STEP) {
+      SRCY += STEP_FINE;
+    } else {
+      SRCY += STEP;
+    }
   }
 
   if (key == gdk_keyval_from_name("a")) {
-    srcX -= STEP_FINE;
+    if (FINE_STEP) {
+      SRCX -= STEP_FINE;
+    } else {
+      SRCX -= STEP;
+    }
   }
 
   if (key == gdk_keyval_from_name("d")) {
-    srcX += STEP_FINE;
+    if (FINE_STEP) {
+      SRCX += STEP_FINE;
+    } else {
+      SRCX += STEP;
+    }
   }
 
-  if (srcY < 0) {
-    srcY = 0;
+  if (key == gdk_keyval_from_name("f")) {
+    FINE_STEP = !FINE_STEP;
   }
 
-  if (srcY > (FULL_HEIGHT - ZOOM_HEIGHT)) {
-    srcY = FULL_HEIGHT - ZOOM_HEIGHT;
+  if (key == gdk_keyval_from_name("z")) {
+    ZOOM_FACTOR -= 1;
+    ZOOM_WIDTH = 16 * ZOOM_FACTOR;
+    ZOOM_HEIGHT = 9 * ZOOM_FACTOR;
   }
 
-  if (srcX < 0) {
-    srcX = 0;
+  if (key == gdk_keyval_from_name("c")) {
+    ZOOM_FACTOR += 1;
+    ZOOM_WIDTH = 16 * ZOOM_FACTOR;
+    ZOOM_HEIGHT = 9 * ZOOM_FACTOR;
   }
 
-  if (srcX > (FULL_WIDTH - ZOOM_WIDTH)) {
-    srcX = FULL_WIDTH - ZOOM_WIDTH;
+  if (SRCY < 0) {
+    SRCY = 0;
+  }
+
+  if (SRCY > (FULL_HEIGHT - ZOOM_HEIGHT)) {
+    SRCY = FULL_HEIGHT - ZOOM_HEIGHT;
+  }
+
+  if (SRCX < 0) {
+    SRCX = 0;
+  }
+
+  if (SRCX > (FULL_WIDTH - ZOOM_WIDTH)) {
+    SRCX = FULL_WIDTH - ZOOM_WIDTH;
   }
 
   return TRUE;
@@ -192,6 +212,8 @@ static void activate() {
 int main(int argc, char **argv) {
 
   gtk_init(&argc, &argv);
+
+  init();
 
   activate();
 
