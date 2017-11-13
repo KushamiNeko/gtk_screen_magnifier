@@ -1,9 +1,4 @@
-#include <cairo.h>
 #include <gtk/gtk.h>
-#include <pango/pangocairo.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -28,18 +23,25 @@
 /*#define START_GRAVITY GDK_GRAVITY_NORTH_WEST*/
 
 #define START_X FULL_WIDTH
-#define START_Y 625
+/*#define START_Y 625*/
+#define START_Y FULL_HEIGHT
 #define START_GRAVITY GDK_GRAVITY_SOUTH_EAST
+
+/*#define srcX = FULL_WIDTH - ZOOM_WIDTH - 160;*/
+/*#define srcY = 250;*/
+
+/*#define srcX = FULL_WIDTH - ZOOM_WIDTH - 530;*/
+/*#define srcY = 220;*/
+
+#define SRC_X FULL_WIDTH - ZOOM_WIDTH
+#define SRC_Y 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static GdkPixbuf *SCREENSHOT = NULL;
 
-/*static gint srcX = FULL_WIDTH - ZOOM_WIDTH - 160;*/
-/*static gint srcY = 250;*/
-
-static gint srcX = FULL_WIDTH - ZOOM_WIDTH - 530;
-static gint srcY = 220;
+static gint srcX = SRC_X;
+static gint srcY = SRC_Y;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
