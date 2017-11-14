@@ -5,12 +5,14 @@
 #define FULL_WIDTH 1920
 #define FULL_HEIGHT 1080
 
-#define WINDOW_FACTOR 25
-#define WINDOW_WIDTH 16 * WINDOW_FACTOR
-#define WINDOW_HEIGHT 9 * WINDOW_FACTOR
+/*#define WINDOW_FACTOR 25*/
+/*#define WINDOW_WIDTH 16 * WINDOW_FACTOR*/
+/*#define WINDOW_HEIGHT 9 * WINDOW_FACTOR*/
+#define WINDOW_WIDTH 330
+#define WINDOW_HEIGHT 200
 
 #define STEP_FINE 5
-#define STEP 15
+#define STEP 20
 
 #define INTERVAL 100
 
@@ -25,7 +27,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static GdkPixbuf *SCREENSHOT = NULL;
+static GdkPixbuf* SCREENSHOT = NULL;
 
 static gboolean FINE_STEP = FALSE;
 
@@ -53,7 +55,7 @@ static void screenshotTake() {
   gint originX;
   gint originY;
 
-  GdkWindow *rootWindow = gdk_get_default_root_window();
+  GdkWindow* rootWindow = gdk_get_default_root_window();
 
   gint width = gdk_window_get_width(rootWindow);
   gint height = gdk_window_get_height(rootWindow);
@@ -70,12 +72,11 @@ static void screenshotTake() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static GdkPixbuf *screenshotZoom() {
-
-  GdkPixbuf *screenshotSub =
+static GdkPixbuf* screenshotZoom() {
+  GdkPixbuf* screenshotSub =
       gdk_pixbuf_new_subpixbuf(SCREENSHOT, SRCX, SRCY, ZOOM_WIDTH, ZOOM_HEIGHT);
 
-  GdkPixbuf *screenshot = gdk_pixbuf_scale_simple(
+  GdkPixbuf* screenshot = gdk_pixbuf_scale_simple(
       screenshotSub, WINDOW_WIDTH, WINDOW_HEIGHT, GDK_INTERP_BILINEAR);
 
   g_object_unref(screenshotSub);
@@ -85,9 +86,9 @@ static GdkPixbuf *screenshotZoom() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static gboolean cbKeyPressed(GtkWidget *widget, GdkEventKey *event,
-                             void *data) {
-
+static gboolean cbKeyPressed(GtkWidget* widget,
+                             GdkEventKey* event,
+                             void* data) {
   guint key = event->keyval;
 
   if (key == gdk_keyval_from_name("w")) {
@@ -159,11 +160,10 @@ static gboolean cbKeyPressed(GtkWidget *widget, GdkEventKey *event,
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static gboolean cbRender(void *data) {
+static gboolean cbRender(void* data) {
+  GtkImage* mainImage = (GtkImage*)data;
 
-  GtkImage *mainImage = (GtkImage *)data;
-
-  GdkPixbuf *screenOld = gtk_image_get_pixbuf(mainImage);
+  GdkPixbuf* screenOld = gtk_image_get_pixbuf(mainImage);
 
   gtk_image_clear(mainImage);
 
@@ -172,7 +172,7 @@ static gboolean cbRender(void *data) {
   }
 
   screenshotTake();
-  GdkPixbuf *screen = screenshotZoom();
+  GdkPixbuf* screen = screenshotZoom();
 
   gtk_image_set_from_pixbuf(mainImage, screen);
 
@@ -183,8 +183,7 @@ static gboolean cbRender(void *data) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void activate() {
-
-  GtkWidget *mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  GtkWidget* mainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(mainWindow), "Screen Magnifier");
   gtk_window_set_resizable(GTK_WINDOW(mainWindow), FALSE);
 
@@ -192,7 +191,7 @@ static void activate() {
   gtk_window_move(GTK_WINDOW(mainWindow), START_X, START_Y);
   gtk_window_set_keep_above(GTK_WINDOW(mainWindow), TRUE);
 
-  GtkWidget *mainImage = gtk_image_new_from_pixbuf(NULL);
+  GtkWidget* mainImage = gtk_image_new_from_pixbuf(NULL);
 
   gtk_container_add(GTK_CONTAINER(mainWindow), mainImage);
 
@@ -209,8 +208,7 @@ static void activate() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int main(int argc, char **argv) {
-
+int main(int argc, char** argv) {
   gtk_init(&argc, &argv);
 
   init();
