@@ -8,10 +8,11 @@ GENERAL_HELPER = ~/programming_projects/c/general/bin
 
 #PKG_CONFIG_LIBS = gtk+-3.0 glib-2.0 gdk-pixbuf-2.0
 PKG_CONFIG_LIBS = gtk+-3.0 
+#PKG_CONFIG_LIBS = gtk+-wayland-3.0 gdk-wayland-3.0
 
 MAIN_PKG_CONFIG_LIBS = $(PKG_CONFIG_LIBS)
 
-TEST_PKG_CONFIG_LIBS = $(PKG_CONFIG_LIBS) cmockery2
+#TEST_PKG_CONFIG_LIBS = $(PKG_CONFIG_LIBS) cmockery2
 
 bin/main :
 	gcc $(FLAGS) `pkg-config --cflags $(MAIN_PKG_CONFIG_LIBS)` \
